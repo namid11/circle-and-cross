@@ -1,3 +1,4 @@
+import 'package:gameon33/component/sign_tile.dart';
 import 'package:gameon33/manager/game_manager.dart';
 import 'dart:math' as math;
 
@@ -65,6 +66,12 @@ class CPUManager {
       }
 
       return previousIndex;
+    }
+  }
+
+  void playBackCPU() {
+    if (previousIndex != null) {
+      gameManager.playBack(index: previousIndex);
     }
   }
 }
