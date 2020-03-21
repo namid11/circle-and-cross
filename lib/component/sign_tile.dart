@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 typedef void TileListener(int);
@@ -16,16 +16,33 @@ class SignTile extends StatefulWidget {
 
   }
 
-  set statusWidget(value) {
-    _signTileState.statusWidget = value;
+  void setStatusWidget(dynamic value) {
+    _signTileState.setStatusWidget(value);
   }
+
+  void disappear() => _signTileState.disappear();
+
+  void effect() => _signTileState.effect();
+
+  void drawEffect() => _signTileState.drawEffect();
 
   @override
   _SignTileState createState() => _signTileState;
 }
 
+
+
 class _SignTileState extends State<SignTile> {
+
+  EdgeInsetsGeometry aniPadding = EdgeInsets.all(100);
+  Duration aniDuration = Duration(milliseconds: 200);
+  Curve aniCurve = Curves.bounceOut;
+  Matrix4 aniTransform = Matrix4.rotationX(0)..setTranslationRaw(0, 0, 0);
+
   Widget get statusWidget {
+    setState(() {
+      aniPadding = EdgeInsets.all(10);
+    });
     switch (widget.sign) {
       case SIGN.NONE:
         return tileWeight(icon: null,);
@@ -33,11 +50,13 @@ class _SignTileState extends State<SignTile> {
         return tileWeight(icon: Icons.close, color: Colors.blueAccent);
       case SIGN.TICK:
         return tileWeight(icon: Icons.panorama_fish_eye, color: Colors.redAccent);
+      case SIGN.DRAW:
+        return tileWeight(icon: Icons.thumb_up, color: Colors.orangeAccent);
       default:
         return Container();
     }
   }
-  set statusWidget(value) {
+  void setStatusWidget(dynamic value) {
     if (value is int) {
       switch (value) {
         case 0:
@@ -59,8 +78,31 @@ class _SignTileState extends State<SignTile> {
     } else if (value is SIGN) {
       setState(() {
         widget.sign = value;
+        if (value == SIGN.NONE) {
+          aniPadding = EdgeInsets.all(100);
+        }
       });
     }
+  }
+  void disappear() {
+    setState(() {
+      aniDuration = Duration(milliseconds: 300);
+      aniPadding = EdgeInsets.all(100);
+      aniCurve = Curves.easeIn;
+    });
+  }
+
+  void effect() {
+    setState(() {});
+  }
+
+  void drawEffect() {
+    setState(() {
+      aniDuration = Duration(milliseconds: 300);
+      aniPadding = EdgeInsets.all(20);
+      aniCurve = Curves.easeIn;
+      setStatusWidget(SIGN.DRAW);
+    });
   }
 
   Widget tileWeight({IconData icon, Color color}) {
@@ -83,8 +125,14 @@ class _SignTileState extends State<SignTile> {
           widget.listener(widget.tileIndex);
         },
         padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-        child: statusWidget);
+        child: AnimatedContainer(
+          duration: aniDuration,
+          padding: aniPadding,
+          curve: aniCurve,
+          color: Colors.white,
+          transform: aniTransform,
+          child: statusWidget,));
   }
 }
 
-enum SIGN { TICK, CROSS, NONE }
+enum SIGN { TICK, CROSS, NONE, DRAW }
