@@ -16,7 +16,7 @@ class GameManager {
   int get baseLength => this._baseLength;
 
   bool _userIsFirst = true;
-  bool get UserIsFirst => _userIsFirst;
+  bool get userIsFirst => _userIsFirst;
 
   GameManager(List<SIGN> field) {
     this.gameField = field;

@@ -5,6 +5,7 @@ import 'dart:math' as math;
 class CPUManager {
   GameManager gameManager;
   int previousIndex;
+  int previousIndexExtra;
 
   CPUManager({this.gameManager});
 
@@ -55,6 +56,9 @@ class CPUManager {
       if (previousIndex ~/ gameManager.baseLength == targetIdx ~/ gameManager.baseLength - 1 && spaceField.contains(targetIdx))
         candidateIndex.add(targetIdx);
 
+
+      previousIndexExtra = previousIndex ?? null; // ２手前の処理を覚えておく
+
       if (candidateIndex.length > 0) {
         int ranIndex = random.nextInt(candidateIndex.length);
         previousIndex = candidateIndex[ranIndex];
@@ -72,6 +76,7 @@ class CPUManager {
   void playBackCPU() {
     if (previousIndex != null) {
       gameManager.playBack(index: previousIndex);
+      previousIndex = previousIndexExtra;
     }
   }
 }

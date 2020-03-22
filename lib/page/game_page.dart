@@ -111,7 +111,9 @@ class _GamePageState extends State<GamePage>
   void _cpuPlay() {
     int playIndex = _cpuManager.play();
     (this._gridList[playIndex] as SignTile)
-        .setStatusWidget(_gameManager.turnUser());
+        .setStatusWidget(_gameManager.turnUser(), previousFlag: true);
+    if (_cpuManager.previousIndexExtra != null)
+      (this._gridList[_cpuManager.previousIndexExtra] as SignTile).previousMark(flag: false);
   }
 
   @override
@@ -194,7 +196,7 @@ class _GamePageState extends State<GamePage>
                           ),
                           content: Text(
                             "終了しますか？\nこのゲームの記録は反映されません",
-                            style: GoogleFonts.notoSans(
+                            style: GoogleFonts.mPLUS1p(
                               fontSize: 14,
                               color: Colors.orange
                             ),
@@ -274,12 +276,14 @@ class _GamePageState extends State<GamePage>
                     child: FlatButton(
                         onPressed: () {
                           if (_playBackEnable) {
-                            _gameManager.playBack(index: _userPreviousIndex);
-                            _cpuManager.playBackCPU();
                             (_gridList[_userPreviousIndex] as SignTile)
                                 .setStatusWidget(SIGN.NONE);
                             (_gridList[_cpuManager.previousIndex] as SignTile)
                                 .setStatusWidget(SIGN.NONE);
+                            (_gridList[_cpuManager.previousIndexExtra] as SignTile)
+                                .previousMark(flag: true);
+                            _gameManager.playBack(index: _userPreviousIndex);
+                            _cpuManager.playBackCPU();
                             setState(() {
                               _playBackEnable = false;
                             });

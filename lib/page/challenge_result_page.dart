@@ -24,7 +24,7 @@ class _ChallengeResultPageState extends State<ChallengeResultPage> {
       int seriesCount = sp.getInt("total_draw_count") ?? 0;
 
       setState(() {
-        totalDrawCount = seriesCount;
+        totalDrawCount = seriesCount - widget.drawCount;
       });
     });
     Future.delayed(Duration(milliseconds: 500)).then((v) {
