@@ -16,9 +16,11 @@ class SignTile extends StatefulWidget {
 
   }
 
-  void setStatusWidget(dynamic value) {
-    _signTileState.setStatusWidget(value);
+  void setStatusWidget(dynamic value, {bool previousFlag}) {
+    _signTileState.setStatusWidget(value, previousFlag: previousFlag);
   }
+
+  void previousMark({bool flag}) => _signTileState.previousMark(flag: flag);
 
   void disappear() => _signTileState.disappear();
 
@@ -38,6 +40,7 @@ class _SignTileState extends State<SignTile> {
   Duration aniDuration = Duration(milliseconds: 200);
   Curve aniCurve = Curves.bounceOut;
   Matrix4 aniTransform = Matrix4.rotationX(0)..setTranslationRaw(0, 0, 0);
+  Color aniColor = Colors.white;
 
   Widget get statusWidget {
     setState(() {
@@ -56,7 +59,9 @@ class _SignTileState extends State<SignTile> {
         return Container();
     }
   }
-  void setStatusWidget(dynamic value) {
+  void setStatusWidget(dynamic value, {bool previousFlag}) {
+    previousMark(flag: previousFlag);
+
     if (value is int) {
       switch (value) {
         case 0:
@@ -84,11 +89,20 @@ class _SignTileState extends State<SignTile> {
       });
     }
   }
+
   void disappear() {
     setState(() {
       aniDuration = Duration(milliseconds: 300);
       aniPadding = EdgeInsets.all(100);
       aniCurve = Curves.easeIn;
+    });
+  }
+
+  void previousMark({bool flag}) {
+    if (flag == null) flag = false;
+    setState(() {
+      aniDuration = Duration(milliseconds: 200);
+      aniColor = flag ? Color(0xffFED1B2): Colors.white;
     });
   }
 
@@ -108,9 +122,6 @@ class _SignTileState extends State<SignTile> {
   Widget tileWeight({IconData icon, Color color}) {
     return Container(
       constraints: BoxConstraints.expand(),
-      decoration: BoxDecoration(color: Colors.white
-//            border: Border.all(color: Color(0xff444444), width: 2),
-          ),
       child: FittedBox(
         fit: BoxFit.fitHeight,
         child: Icon(icon, color: color,),
@@ -129,7 +140,7 @@ class _SignTileState extends State<SignTile> {
           duration: aniDuration,
           padding: aniPadding,
           curve: aniCurve,
-          color: Colors.white,
+          color: aniColor,
           transform: aniTransform,
           child: statusWidget,));
   }

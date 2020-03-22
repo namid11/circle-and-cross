@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gameon33/page/game_page.dart';
+import 'package:gameon33/page/rule_page.dart';
 import 'package:gameon33/page/total_result_page.dart';
 import 'package:gameon33/page/setting_page.dart';
 import 'package:gameon33/page/waiting_next_stage_page.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'DRAW',
       theme: ThemeData(
         primarySwatch: Colors.grey,
         accentColor: Colors.white,
@@ -27,13 +28,14 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light
       ),
       debugShowCheckedModeBanner: false,
-      home: StartPage(title: 'Flutter Demo Home Page'),
+      home: StartPage(title: 'DRAW'),
       routes: {
         'start': (BuildContext context) => StartPage(),
         'game': (BuildContext context) => GamePage(),
         'setting': (BuildContext context) => SettingPage(),
         'waiting': (BuildContext context) => WaitingNextStagePage(),
         'result': (BuildContext context) => TotalResultPage(),
+        'rule': (BuildContext context) => RulePage()
       },
     );
   }
@@ -51,9 +53,15 @@ class StartPage extends StatefulWidget {
 class _StartPageState extends State<StartPage> {
 
   int themeColor = Colors.redAccent.value;
+  int totalDrawCount = 0;
 
   @override
   void initState() {
+    SharedPreferences.getInstance().then((sp){
+      setState(() {
+        totalDrawCount = sp.getInt("total_draw_count") ?? 0;
+      });
+    });
     super.initState();
   }
 
@@ -108,6 +116,33 @@ class _StartPageState extends State<StartPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(
+                          width: 220,
+                          height: 100,
+                          margin: EdgeInsets.symmetric(vertical: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.orange, width: 10),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(Icons.stars, color: Colors.orange, size: 45,),
+                              Container(
+                                margin: EdgeInsets.symmetric(horizontal: 15),
+                                child: Text(
+                                  "$totalDrawCount",
+                                  style: GoogleFonts.muli(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.orange
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                      ),
+                      Container(
                         margin: EdgeInsets.symmetric(vertical: 10),
                         child: FlatButton(
                             onPressed: () {
@@ -121,14 +156,21 @@ class _StartPageState extends State<StartPage> {
                             child: Container(
                                 width: 200,
                                 height: 100,
-                                child: Center(
-                                  child: Text(
-                                    "チャレンジ",
-                                    style: GoogleFonts.mPLUSRounded1c(
-                                        textStyle: TextStyle(color: Color(themeColor), fontSize: 28),
-                                        fontWeight: FontWeight.w900
-                                    ),
-                                  ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(Icons.games, color: Color(themeColor), size: 35,),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 10),
+                                      child: Text(
+                                        "ゲーム",
+                                        style: GoogleFonts.mPLUSRounded1c(
+                                            textStyle: TextStyle(color: Color(themeColor), fontSize: 28),
+                                            fontWeight: FontWeight.w900
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 )
                             )
                         ),
@@ -137,33 +179,7 @@ class _StartPageState extends State<StartPage> {
                         margin: EdgeInsets.symmetric(vertical: 10),
                         child: FlatButton(
                             onPressed: () {
-                              Navigator.of(context).pushReplacementNamed("game");
-                            },
-                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(20.0))
-                            ),
-                            child: Container(
-                                width: 200,
-                                height: 100,
-                                child: Center(
-                                  child: Text(
-                                    "タイムアタック",
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.mPLUSRounded1c(
-                                        textStyle: TextStyle(color: Color(themeColor), fontSize: 28),
-                                        fontWeight: FontWeight.w900
-                                    ),
-                                  ),
-                                )
-                            )
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        child: FlatButton(
-                            onPressed: () {
+                              Navigator.of(context).pushNamed('rule');
                             },
                             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                             color: Colors.white,
@@ -176,12 +192,15 @@ class _StartPageState extends State<StartPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Icon(Icons.local_library, color: Color(themeColor), size: 30,),
-                                    Text(
-                                      "ルール",
-                                      style: GoogleFonts.mPLUSRounded1c(
-                                          textStyle: TextStyle(color: Color(themeColor), fontSize: 28),
-                                          fontWeight: FontWeight.w900
+                                    Icon(Icons.local_library, color: Color(themeColor), size: 35,),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 10),
+                                      child: Text(
+                                        "ルール",
+                                        style: GoogleFonts.mPLUSRounded1c(
+                                            textStyle: TextStyle(color: Color(themeColor), fontSize: 28),
+                                            fontWeight: FontWeight.w900
+                                        ),
                                       ),
                                     ),
                                   ],

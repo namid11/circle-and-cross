@@ -135,33 +135,32 @@ class _SettingPageState extends State<SettingPage> {
                 ],
               ),
             ),
+            FloatingActionButton.extended(
+              onPressed: () {
+                SharedPreferences.getInstance().then((sp) {
+                  sp.setInt(
+                    "theme_color", userIsFirst ? Colors.redAccent.value : Colors.blueAccent.value);
+                  sp.setBool("user_first", userIsFirst);
+                });
+                Navigator.of(context).pushReplacementNamed('start');
+              },
+              label: Text(
+                '更新',
+                style: GoogleFonts.mPLUSRounded1c(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              icon: Icon(
+                Icons.update,
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.orangeAccent,
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          SharedPreferences.getInstance().then((sp) {
-            sp.setInt(
-                "theme_color", userIsFirst ? Colors.redAccent.value : Colors.blueAccent.value);
-            sp.setBool("user_first", userIsFirst);
-          });
-          Navigator.of(context).pushReplacementNamed('start');
-        },
-        label: Text(
-          '更新',
-          style: GoogleFonts.mPLUSRounded1c(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        icon: Icon(
-          Icons.update,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.orangeAccent,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
